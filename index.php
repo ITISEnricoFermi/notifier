@@ -26,8 +26,24 @@
 
 add_action('save_post', function ($post_id, $post, $update) {
 
+    if ( wp_is_post_autosave( $post_id ) ) {
+        return $post_id;
+    }
+   
+    if ( wp_is_post_revision( $post_id ) ) {
+        return $post_id;
+    }
+
+    if ($post->post_modified != $post->post_date) {
+        return $post_id;
+    }
+
+    if ($post->post_status != "publish" || $post->post_type != "post") {
+        return $post_id;
+    }
+
     $args = array(
-        'body' => json_encode(array('id' => $post_id, 'post' => $post)),
+        'body' => json_encode(array('id' => $post_id, 'post' => $post, 'update' => $update)),
         'httpversion' => '1.1',
         'data_format' => 'body',
         'headers'     => array('Content-Type' => 'application/json; charset=utf-8'),
