@@ -42,18 +42,20 @@ add_action('save_post', function ($post_id, $post, $update) {
         return $post_id;
     }
 
-    $args = array(
-        'body' => json_encode(array('id' => $post_id, 'post' => $post, 'update' => $update)),
-        'httpversion' => '1.1',
-        'data_format' => 'body',
-        'headers'     => array('Content-Type' => 'application/json; charset=utf-8'),
-        'cookies' => array()
-    );
-
     // Impostazioni del plugin
     $options = get_option('my_option_name');
 
     if(!isset($options['url'])) return;
+
+    $args = array(
+        'body' => json_encode(array('id' => $post_id, 'post' => $post, 'update' => $update)),
+        'httpversion' => '1.1',
+        'data_format' => 'body',
+        'headers'     => array(
+            'Content-Type' => 'application/json; charset=utf-8',
+            'Authorization' => 'Bearer ' . $options['token']),
+        'cookies' => array()
+    );
 
     return wp_remote_post($options['url'], $args);
 }, 10, 3);
