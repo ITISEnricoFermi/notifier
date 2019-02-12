@@ -24,7 +24,9 @@
 
 include(plugin_dir_path( __FILE__ ) . 'options.php');
 
-add_action('save_post', function ($post_id, $post, $update) {
+add_action('save_post', 'send_notification', 10, 3);
+
+function send_notification ($post_id, $post, $update) {
 
     if ( wp_is_post_autosave( $post_id ) ) {
         return $post_id;
@@ -58,4 +60,4 @@ add_action('save_post', function ($post_id, $post, $update) {
     );
 
     return wp_remote_post($options['url'], $args);
-}, 10, 3);
+}
