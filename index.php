@@ -22,7 +22,7 @@
  * along with Notifier. If not, see https://www.gnu.org/licenses/gpl.html.
  */
 
-// include(plugin_dir_path( __FILE__ ) . 'options.php');
+include(plugin_dir_path( __FILE__ ) . 'options.php');
 
 add_action('save_post', function ($post_id, $post, $update) {
 
@@ -50,5 +50,10 @@ add_action('save_post', function ($post_id, $post, $update) {
         'cookies' => array()
     );
 
-    return wp_remote_post('http://fermibot.riccardosangiorgio.com/', $args);
+    // Impostazioni del plugin
+    $options = get_option('my_option_name');
+
+    if(!isset($options['url'])) return;
+
+    return wp_remote_post($options['url'], $args);
 }, 10, 3);
